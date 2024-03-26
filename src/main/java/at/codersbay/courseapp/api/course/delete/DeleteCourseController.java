@@ -29,8 +29,10 @@ public class DeleteCourseController {
 
         Optional<Course> optionalCourse = courseRepository.findById(id);
 
+        CourseResponseBody courseResponseBody = new CourseResponseBody();
+
+
         if (!optionalCourse.isPresent()) {
-            CourseResponseBody courseResponseBody = new CourseResponseBody();
             courseResponseBody.addErrorMessage("The course with the Id " + id + " does not exist.");
             return new ResponseEntity(courseResponseBody, HttpStatus.NOT_FOUND);
         }
@@ -40,15 +42,40 @@ public class DeleteCourseController {
         optionalCourse = courseRepository.findById(id);
 
         if (optionalCourse.isPresent()) {
-            CourseResponseBody courseResponseBody = new CourseResponseBody();
             courseResponseBody.addErrorMessage("The course with the id " + id + " could not be deleted.");
             return new ResponseEntity(courseResponseBody, HttpStatus.SERVICE_UNAVAILABLE);
         } else {
-            CourseResponseBody courseResponseBody = new CourseResponseBody();
             courseResponseBody.addMessage("The course with the id " + id + " was deleted.");
             return new ResponseEntity(courseResponseBody, HttpStatus.OK);
         }
 
+    }
+
+    @DeleteMapping("title/{title}")
+    public ResponseEntity<ResponseBody> deleteCourseByTitle (
+            @PathVariable
+            String title) {
+
+        CourseResponseBody courseResponseBody = new CourseResponseBody();
+        Optional<Course> optionalCourse = courseRepository.findByTitle(title);
+
+        if (!optionalCourse.isPresent()) {
+            courseResponseBody.addErrorMessage("The course with the title '" + title + "' does not exist.");
+            return new ResponseEntity(courseResponseBody, HttpStatus.NOT_FOUND);
+        }
+
+        Course courseToDelete = optionalCourse.get();
+        courseRepository.deleteById(courseToDelete.getId());
+
+        optionalCourse = courseRepository.findByTitle(title);
+
+        if (optionalCourse.isPresent()) {
+            courseResponseBody.addErrorMessage("The course with the title '" + title + "' could not be deleted:");
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.SERVICE_UNAVAILABLE);
+        } else {
+            courseResponseBody.addMessage("The course with the title '" + title + "' was deleted.");
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.OK);
+        }
     }
 
 }
