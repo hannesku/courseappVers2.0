@@ -5,6 +5,13 @@ public class CreateCourseDTO {
     private String description;
     private int maxParticipants;
 
+
+    public String getCapitalizedTitle() {
+        String capitalizedTitle = "";
+        capitalizedTitle = title.substring(0, 1).toUpperCase() + title.substring(1);
+        return capitalizedTitle;
+    }
+
     public String getTitle() {
         return title;
     }

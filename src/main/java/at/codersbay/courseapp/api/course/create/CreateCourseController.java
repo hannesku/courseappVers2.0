@@ -21,6 +21,9 @@ public class CreateCourseController {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private CreateCourseService courseService;
+
     @PostMapping
     public ResponseEntity<ResponseBody> createNewCourse (
             @RequestBody
@@ -28,23 +31,34 @@ public class CreateCourseController {
 
         CourseResponseBody courseResponseBody = new CourseResponseBody();
 
-        if (createCourseDTO == null || createCourseDTO.getTitle().isEmpty() || createCourseDTO.getMaxParticipants() <= 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (createCourseDTO == null) {
+            courseResponseBody.addErrorMessage("The Requestbody is empty");
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
         }
 
         Optional<Course> optionalCourse = this.courseRepository.findByTitle(createCourseDTO.getTitle());
+        Optional<Course> optionalLowerCaseCourse = this.courseRepository.findByTitle(createCourseDTO.getTitle().toLowerCase());
+        Optional<Course> optionalCapitalizedCourse = this.courseRepository.findByTitle(createCourseDTO.getCapitalizedTitle());
 
-        if (optionalCourse.isPresent()) {
+        if (optionalCourse.isPresent() || optionalLowerCaseCourse.isPresent() || optionalCapitalizedCourse.isPresent()) {
             courseResponseBody.addErrorMessage("The course with the title '" + createCourseDTO.getTitle() + "' exists already.");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.CONFLICT);
         }
 
-
-        Course newCourse = new Course(createCourseDTO.getTitle(), createCourseDTO.getDescription(), createCourseDTO.getMaxParticipants());
+        Course newCourse = null;
 
         try {
-            this.courseRepository.save(newCourse);
-        } catch (Throwable t) {
+            newCourse = this.courseService.createCourse(
+                createCourseDTO.getTitle(),
+                createCourseDTO.getDescription(),
+                createCourseDTO.getMaxParticipants());
+
+        } catch (TitleIsEmptyException | DescriptionIsEmptyException | NumberOfParticipantsException exception) {
+            courseResponseBody.addErrorMessage(exception.getMessage());
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
+        }
+
+        if (!courseRepository.findByTitle(createCourseDTO.getTitle()).isPresent()) {
             courseResponseBody.addErrorMessage("The new course couldn't be saved.");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -53,5 +67,6 @@ public class CreateCourseController {
         courseResponseBody.addMessage("The new course was created successfully.");
         // return new ResponseEntity<>(courseResponseBody, HttpStatus.OK);
         return ResponseEntity.ok(courseResponseBody);
+
     }
 }
