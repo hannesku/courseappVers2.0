@@ -37,7 +37,7 @@ public class GetCourseController {
         Optional<Course> optionalCourse = this.courseRepository.findById(id);
 
         if (!optionalCourse.isPresent()) {
-             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             // Diff: return ResponseEntity.noContent();
         }
 

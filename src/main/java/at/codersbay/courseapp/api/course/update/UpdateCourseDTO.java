@@ -1,21 +1,10 @@
-package at.codersbay.courseapp.api.course.create;
+package at.codersbay.courseapp.api.course.update;
 
-public class CreateCourseDTO {
+public class UpdateCourseDTO {
     private Long id;
     private String title;
     private String description;
     private int maxParticipants;
-
-
-    public String getCapitalizedTitle() {
-        String capitalizedTitle = "";
-        capitalizedTitle = title.substring(0, 1).toUpperCase() + title.substring(1);
-        return capitalizedTitle;
-    }
-
-    public String getTitle() {
-        return title;
-    }
 
     public Long getId() {
         return id;
@@ -23,6 +12,10 @@ public class CreateCourseDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
