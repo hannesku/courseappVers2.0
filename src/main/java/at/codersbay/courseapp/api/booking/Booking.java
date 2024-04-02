@@ -3,6 +3,7 @@ package at.codersbay.courseapp.api.booking;
 import at.codersbay.courseapp.api.course.Course;
 import at.codersbay.courseapp.api.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.bytebuddy.asm.Advice;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "TB_BOOKING")
 public class Booking {
     @EmbeddedId
-    private BookingId id;
+    private BookingId id = new BookingId();
 
     @JsonIgnore
     @ManyToOne
@@ -21,12 +22,12 @@ public class Booking {
     private Course course;
 
     @JsonIgnore
-    @OneToOne
+    @ManyToOne
     @MapsId("userId")
     private User user;
 
     @Column
-    private LocalDate bookingDate;
+    private LocalDate bookingDate = LocalDate.now();
 
     public Booking() {
     }

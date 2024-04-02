@@ -20,6 +20,19 @@ public class BookingId implements Serializable {
         this.userId = userId;
     }
 
+    public Long getCourseId() {
+        return courseId;
+    }
 
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }

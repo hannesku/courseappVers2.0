@@ -4,6 +4,7 @@ import at.codersbay.courseapp.api.ResponseBody;
 import at.codersbay.courseapp.api.course.Course;
 import at.codersbay.courseapp.api.course.CourseRepository;
 import at.codersbay.courseapp.api.course.CourseResponseBody;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 @RestController
-@RequestMapping("/api/course/{id}")
+@RequestMapping("/api/course/")
 public class UpdateCourseController {
 
     @Autowired
@@ -23,8 +24,8 @@ public class UpdateCourseController {
     @Autowired
     private CourseRepository courseRepository;
 
-    @PutMapping
-    public ResponseEntity<ResponseBody> updateCourseById (
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseBody> updateCourseById(
             @PathVariable
             Long id,
             @RequestBody
@@ -32,7 +33,7 @@ public class UpdateCourseController {
     ) {
         CourseResponseBody courseResponseBody = new CourseResponseBody();
 
-        if (updateCourseDTO == null){
+        if (updateCourseDTO == null) {
             courseResponseBody.addErrorMessage("No Request Body.");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.NO_CONTENT);
         }
@@ -45,13 +46,15 @@ public class UpdateCourseController {
 
         Course updatedCourse = optionalCourse.get();
 
-        if (!StringUtils.isEmpty(updateCourseDTO.getTitle()) || !updateCourseDTO.getTitle().isEmpty()) {
+        if (!StringUtils.isEmpty(updateCourseDTO.getTitle())) {
             updatedCourse.setTitle(updateCourseDTO.getTitle());
         }
-        if (!StringUtils.isEmpty(updateCourseDTO.getDescription()) || !updateCourseDTO.getDescription().isEmpty()) {
+        if (!StringUtils.isEmpty(updateCourseDTO.getDescription())) {
             updatedCourse.setDescription((updateCourseDTO.getDescription()));
         }
-        if (updateCourseDTO.getMaxParticipants() > 0) {
+        if (!ObjectUtils.isEmpty(updateCourseDTO.getMaxParticipants())
+                && updateCourseDTO.getMaxParticipants() > 0
+                && updateCourseDTO.getMaxParticipants() <= 25) {
             updatedCourse.setMaxParticipants(updateCourseDTO.getMaxParticipants());
         }
 
@@ -69,36 +72,52 @@ public class UpdateCourseController {
 
     }
 
-@PutMapping("/bytitle")
-    public ResponseEntity<ResponseBody> updateCourseByTitle (
+
+    /*
+    @PutMapping("/bytitle/")
+    public ResponseEntity<ResponseBody> updateCourseByTitle(
             @RequestBody
             UpdateCourseDTO updateCourseDTO) {
 
-    System.out.println("Title to update: " + updateCourseDTO.getTitle());
+        System.out.println("Title to update: " + updateCourseDTO.getTitle());
 
-    CourseResponseBody courseResponseBody = new CourseResponseBody();
+        CourseResponseBody courseResponseBody = new CourseResponseBody();
 
-    // Check if Request Body (updateCourseDTO) is null.
+        // Check if Request Body (updateCourseDTO) is null.
 
-    if (StringUtils.isEmpty(updateCourseDTO.getTitle())) {
-        courseResponseBody.addErrorMessage("The title is empty.");
-        return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
+        if (StringUtils.isEmpty(updateCourseDTO.getTitle())) {
+            courseResponseBody.addErrorMessage("The title is empty.");
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Course> optionalCourse = courseRepository.findByTitle(updateCourseDTO.getTitle());
+
+        if (!optionalCourse.isPresent()) {
+            courseResponseBody.addErrorMessage("Can't find course with the title " + updateCourseDTO.getTitle());
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.NOT_FOUND);
+
+
+
+            if (!StringUtils.isEmpty(description)) {
+                updatedCourse.setDescription(description);
+            }
+            if (maxParticipants > 0 && maxParticipants <= 25 ) {
+                updatedCourse.setMaxParticipants(maxParticipants);
+            }
+
+            return courseRepository.save(updatedCourse);
+
+            Course updateCourse = this.updateCourseService.updateCourse(optionalCourse.get(),
+                    updateCourseDTO.getDescription(), updateCourseDTO.getMaxParticipants());
+            courseResponseBody.addMessage("The course " + updateCourseDTO.getTitle() + " was updated to:");
+            courseResponseBody.setCourse(updateCourse);
+            return new ResponseEntity<>(courseResponseBody, HttpStatus.OK);
+
+        }
+
     }
 
-    Optional<Course> optionalCourse = courseRepository.findByTitle(updateCourseDTO.getTitle());
-
-    if (!optionalCourse.isPresent()) {
-        courseResponseBody.addErrorMessage("Can't find course with the title " + updateCourseDTO.getTitle());
-        return new ResponseEntity<>(courseResponseBody, HttpStatus.NOT_FOUND);
-    }
-
-    Course updateCourse = this.updateCourseService.updateCourse(updateCourseDTO.getDescription(), updateCourseDTO.getMaxParticipants());
-    courseResponseBody.addMessage("The course " + updateCourseDTO.getTitle() + " was updated to:");
-    courseResponseBody.setCourse(updateCourse);
-    return new ResponseEntity<>(courseResponseBody, HttpStatus.OK);
-
-
-}
+     */
 
 
 }

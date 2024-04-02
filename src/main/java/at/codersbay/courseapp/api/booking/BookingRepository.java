@@ -2,5 +2,5 @@ package at.codersbay.courseapp.api.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BookingRepository extends JpaRepository {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 }

@@ -57,7 +57,7 @@ public class DeleteCourseController {
             String title) {
 
         CourseResponseBody courseResponseBody = new CourseResponseBody();
-        Optional<Course> optionalCourse = courseRepository.findByTitle(title);
+        Optional<Course> optionalCourse = courseRepository.findByTitleIgnoreCase(title);
 
         if (!optionalCourse.isPresent()) {
             courseResponseBody.addErrorMessage("The course with the title '" + title + "' does not exist.");
@@ -67,7 +67,7 @@ public class DeleteCourseController {
         Course courseToDelete = optionalCourse.get();
         courseRepository.deleteById(courseToDelete.getId());
 
-        optionalCourse = courseRepository.findByTitle(title);
+        optionalCourse = courseRepository.findByTitleIgnoreCase(title);
 
         if (optionalCourse.isPresent()) {
             courseResponseBody.addErrorMessage("The course with the title '" + title + "' could not be deleted:");

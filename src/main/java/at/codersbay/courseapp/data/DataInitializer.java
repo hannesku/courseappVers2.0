@@ -1,5 +1,7 @@
 package at.codersbay.courseapp.data;
 
+import at.codersbay.courseapp.api.booking.Booking;
+import at.codersbay.courseapp.api.booking.BookingRepository;
 import at.codersbay.courseapp.api.course.Course;
 import at.codersbay.courseapp.api.course.CourseRepository;
 import at.codersbay.courseapp.api.user.User;
@@ -19,10 +21,14 @@ public class DataInitializer {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private BookingRepository bookingRepository;
+
     @PostConstruct
     public void setup() {
         importUsers();
         importCourses();
+        createInitialBookings();
     }
 
     public void importUsers() {
@@ -79,6 +85,34 @@ public class DataInitializer {
         //python.setDescription("Students are introduced to core programming concepts like data structures, conditionals, loops, variables, and functions. This course includes an overview of the various tools available for writing and running Python, and gets students coding quickly.");
         python.setMaxParticipants(15);
         this.courseRepository.save(python);
+
+    }
+
+    public void createInitialBookings() {
+
+        List<Booking> allBookings = this.bookingRepository.findAll();
+        if (allBookings.size()>0) {
+            return;
+        }
+
+
+        Booking firstBooking = new Booking();
+        firstBooking.setUser(userRepository.findByUsername("maxmustermann").get());
+        firstBooking.setCourse(courseRepository.findByTitleIgnoreCase("Java").get());
+        bookingRepository.save(firstBooking);
+
+        Booking secondBooking = new Booking();
+        secondBooking.setUser(userRepository.findByUsername("maxmustermann").get());
+        secondBooking.setCourse(courseRepository.findByTitleIgnoreCase("Python").get());
+        bookingRepository.save(secondBooking);
+
+        Booking thirdBooking = new Booking();
+        thirdBooking.setUser(userRepository.findByUsername("wissensdurst").get());
+        thirdBooking.setCourse(courseRepository.findByTitleIgnoreCase("Spring Boot").get());
+        bookingRepository.save(thirdBooking);
+
+
+
 
     }
 

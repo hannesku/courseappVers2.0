@@ -4,9 +4,7 @@ package at.codersbay.courseapp.api.course.get;
 import at.codersbay.courseapp.api.course.Course;
 import at.codersbay.courseapp.api.course.CourseRepository;
 import at.codersbay.courseapp.api.course.CourseResponseBody;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +29,7 @@ public class GetCourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(
+    public ResponseEntity<CourseResponseBody> getCourseById(
             @PathVariable
             Long id) {
         Optional<Course> optionalCourse = this.courseRepository.findById(id);
@@ -48,7 +46,7 @@ public class GetCourseController {
         CourseResponseBody courseResponseBody = new CourseResponseBody();
         courseResponseBody.addMessage("The course with id " + id + " does exist.");
         courseResponseBody.setCourse(course);
-        return new ResponseEntity(courseResponseBody, HttpStatus.FOUND);
+        return new ResponseEntity<>(courseResponseBody, HttpStatus.FOUND);
 
     }
 
@@ -56,11 +54,11 @@ public class GetCourseController {
     public ResponseEntity<Course> getCourseByTitle(
             @PathVariable
             String title) {
-        Optional<Course> optionalCourse = this.courseRepository.findByTitle(title);
+        Optional<Course> optionalCourse = this.courseRepository.findByTitleIgnoreCase(title);
 
         if (!optionalCourse.isPresent()) {
             CourseResponseBody courseResponseBody = new CourseResponseBody();
-            courseResponseBody.addErrorMessage("The course with the title \"" + title + "\" does not exist.");
+            courseResponseBody.addErrorMessage("The course with the title '" + title + "' does not exist.");
             return new ResponseEntity(courseResponseBody, HttpStatus.NOT_FOUND);
 
             // ?? When to use ResponseEntity<>(...)  vs   ResponseEntity(...)   ??

@@ -31,14 +31,15 @@ public class CreateCourseController {
 
         CourseResponseBody courseResponseBody = new CourseResponseBody();
 
+        System.out.println(createCourseDTO);
         if (createCourseDTO == null) {
             courseResponseBody.addErrorMessage("The Requestbody is empty");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
         }
 
-        Optional<Course> optionalCourse = this.courseRepository.findByTitle(createCourseDTO.getTitle());
-        Optional<Course> optionalLowerCaseCourse = this.courseRepository.findByTitle(createCourseDTO.getTitle().toLowerCase());
-        Optional<Course> optionalCapitalizedCourse = this.courseRepository.findByTitle(createCourseDTO.getCapitalizedTitle());
+        Optional<Course> optionalCourse = this.courseRepository.findByTitleIgnoreCase(createCourseDTO.getTitle());
+        Optional<Course> optionalLowerCaseCourse = this.courseRepository.findByTitleIgnoreCase(createCourseDTO.getTitle().toLowerCase());
+        Optional<Course> optionalCapitalizedCourse = this.courseRepository.findByTitleIgnoreCase(createCourseDTO.getCapitalizedTitle());
 
         if (optionalCourse.isPresent() || optionalLowerCaseCourse.isPresent() || optionalCapitalizedCourse.isPresent()) {
             courseResponseBody.addErrorMessage("The course with the title '" + createCourseDTO.getTitle() + "' exists already.");
@@ -58,7 +59,7 @@ public class CreateCourseController {
             return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
         }
 
-        if (!courseRepository.findByTitle(createCourseDTO.getTitle()).isPresent()) {
+        if (!courseRepository.findByTitleIgnoreCase(createCourseDTO.getTitle()).isPresent()) {
             courseResponseBody.addErrorMessage("The new course couldn't be saved.");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
