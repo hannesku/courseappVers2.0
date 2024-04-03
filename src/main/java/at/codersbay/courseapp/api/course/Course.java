@@ -1,9 +1,12 @@
 package at.codersbay.courseapp.api.course;
 
 
+import at.codersbay.courseapp.api.booking.Booking;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_COURSE")
@@ -30,6 +33,9 @@ public class Course {
     @Column
     private int maxParticipants;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
     public Course() {
 
@@ -67,5 +73,13 @@ public class Course {
 
     public void setMaxParticipants(int maxParticipants) {
         this.maxParticipants = maxParticipants;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

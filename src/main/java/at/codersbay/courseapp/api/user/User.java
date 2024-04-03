@@ -1,9 +1,12 @@
 package at.codersbay.courseapp.api.user;
 
 
+import at.codersbay.courseapp.api.booking.Booking;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name= "TB_USER")
@@ -29,6 +32,10 @@ public class User {
 
     @Column
     private String email;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
     public User() {
     }
@@ -65,5 +72,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }
