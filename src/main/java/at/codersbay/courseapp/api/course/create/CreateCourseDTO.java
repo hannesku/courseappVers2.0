@@ -1,8 +1,7 @@
 package at.codersbay.courseapp.api.course.create;
 
 public class CreateCourseDTO {
-    private Long id;
-    private String title;
+     private String title;
     private String description;
     private int maxParticipants;
 
@@ -15,14 +14,6 @@ public class CreateCourseDTO {
 
     public String getTitle() {
         return title;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setTitle(String title) {
