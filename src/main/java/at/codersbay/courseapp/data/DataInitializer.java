@@ -97,17 +97,17 @@ public class DataInitializer {
 
 
         Booking firstBooking = new Booking();
-        firstBooking.setUser(userRepository.findByUsername("maxmustermann").get());
+        firstBooking.setUser(userRepository.findByUsernameIgnoreCase("maxmustermann").get());
         firstBooking.setCourse(courseRepository.findByTitleIgnoreCase("Java").get());
         bookingRepository.save(firstBooking);
 
         Booking secondBooking = new Booking();
-        secondBooking.setUser(userRepository.findByUsername("maxmustermann").get());
+        secondBooking.setUser(userRepository.findByUsernameIgnoreCase("maxmustermann").get());
         secondBooking.setCourse(courseRepository.findByTitleIgnoreCase("Python").get());
         bookingRepository.save(secondBooking);
 
         Booking thirdBooking = new Booking();
-        thirdBooking.setUser(userRepository.findByUsername("wissensdurst").get());
+        thirdBooking.setUser(userRepository.findByUsernameIgnoreCase("wissensdurst").get());
         thirdBooking.setCourse(courseRepository.findByTitleIgnoreCase("Spring Boot").get());
         bookingRepository.save(thirdBooking);
 

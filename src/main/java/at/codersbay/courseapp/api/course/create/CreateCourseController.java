@@ -31,7 +31,6 @@ public class CreateCourseController {
 
         CourseResponseBody courseResponseBody = new CourseResponseBody();
 
-        System.out.println(createCourseDTO);
         if (createCourseDTO == null) {
             courseResponseBody.addErrorMessage("The Requestbody is empty");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
