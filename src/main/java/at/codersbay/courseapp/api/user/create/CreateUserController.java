@@ -1,10 +1,7 @@
 package at.codersbay.courseapp.api.user.create;
 
-import at.codersbay.courseapp.api.ResponseBody;
-import at.codersbay.courseapp.api.booking.BookingRepository;
-import at.codersbay.courseapp.api.user.User;
-import at.codersbay.courseapp.api.user.UserRepository;
-import at.codersbay.courseapp.api.user.UserResponseBody;
+import at.codersbay.courseapp.api.user.*;
+import at.codersbay.courseapp.api.user.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +16,8 @@ public class CreateUserController {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private CreateUserService createUserService;
-
-    @Autowired
-    private BookingRepository bookingRepository;
 
     @PostMapping("/")
     public ResponseEntity<UserResponseBody> createNewUser (
@@ -33,10 +26,12 @@ public class CreateUserController {
 
         UserResponseBody userResponseBody = new UserResponseBody();
 
+        /*
         if (createUserDTO == null) {
             userResponseBody.addErrorMessage("The Requestbody is empty.");
             return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
         }
+         */
 
         User newUser = null;
 
@@ -46,12 +41,12 @@ public class CreateUserController {
                     createUserDTO.getPassword(),
                     createUserDTO.getEmail());
         } catch (EmailAlreadyExistsExeption |
-                EmailIsEmptyException |
-                EmailIsNoEmailException |
-                PasswordInsecureExeption |
-                PasswordIsEmptyException |
-                UserAlreadyExistsExeption |
-                UsernameIsEmptyException exception) {
+                 EmailIsEmptyException |
+                 EmailIsNoEmailException |
+                 PasswordInsecureExeption |
+                 PasswordIsEmptyException |
+                 UserAlreadyExistsExeption |
+                 UsernameIsEmptyException exception) {
             userResponseBody.addErrorMessage(exception.getMessage());
             return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
         }

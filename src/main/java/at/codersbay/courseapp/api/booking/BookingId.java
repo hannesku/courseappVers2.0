@@ -3,6 +3,7 @@ package at.codersbay.courseapp.api.booking;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class BookingId implements Serializable {
@@ -19,6 +20,24 @@ public class BookingId implements Serializable {
         this.courseId = courseId;
         this.userId = userId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        BookingId that = (BookingId) o;
+        return Objects.equals(courseId, that.courseId) &&
+                Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseId, userId);
+    }
+
 
     public Long getCourseId() {
         return courseId;

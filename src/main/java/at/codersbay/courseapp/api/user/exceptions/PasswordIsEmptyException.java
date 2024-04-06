@@ -1,4 +1,4 @@
-package at.codersbay.courseapp.api.user.create;
+package at.codersbay.courseapp.api.user.exceptions;
 
 public class PasswordIsEmptyException extends Exception{
     public PasswordIsEmptyException (String message) {
