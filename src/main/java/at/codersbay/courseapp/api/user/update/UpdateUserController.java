@@ -20,10 +20,22 @@ import java.util.Optional;
 @RequestMapping("api/user/")
 public class UpdateUserController {
 
+    private static final String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
+            + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+
     @Autowired
     private UserRepository userRepository;
 
 
+    /**
+     *
+     * @param updateUserEmailDTO
+     * @return
+     *
+     * @throws EmailAlreadyExistsExeption
+     * @throws EmailIsNoEmailException
+     * @throws EmailIsEmptyException
+     */
     @PatchMapping("/email/")
     public ResponseEntity<UserResponseBody> updateUserEmail(
             @RequestBody
@@ -38,7 +50,7 @@ public class UpdateUserController {
         } else if (StringUtils.isEmpty(updateUserEmailDTO.getEmail())) {
             throw new EmailIsEmptyException("No email in requestbody.");
 //          userResponseBody.addErrorMessage("No email in requestbody.");
-//          return new ResponseEntity<>(userResponseBody, HttpStatus.NO_CONTENT);
+//          return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
         }
 
         // CHECK IF USER EXISTS
@@ -52,9 +64,6 @@ public class UpdateUserController {
         }
 
         // VALIDATE & UPDATE EMAIL
-        String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-                + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-
         if (!StringUtils.isEmpty(updateUserEmailDTO.getEmail())
                 && userRepository.findByEmail(updateUserEmailDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsExeption("The email-adress " + updateUserEmailDTO.getEmail() + " already exists.");
@@ -85,9 +94,9 @@ public class UpdateUserController {
         if (ObjectUtils.isEmpty(updateUserPasswordDTO.getId())) {
             throw new IdIsEmptyException("Id is missing in Requestbody.");
         } else if (StringUtils.isEmpty(updateUserPasswordDTO.getPassword())) {
-            throw new PasswordIsEmptyException("No password in requestbody.");
-//            userResponseBody.addErrorMessage("No password in requestbody.");
-//            return new ResponseEntity<>(userResponseBody, HttpStatus.NO_CONTENT);
+//            throw new PasswordIsEmptyException("No password in requestbody.");
+            userResponseBody.addErrorMessage("No password in requestbody.");
+            return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
         }
 
         // CHECK IF USER EXISTS

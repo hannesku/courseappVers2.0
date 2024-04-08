@@ -54,4 +54,9 @@ public class BookingId implements Serializable {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString () {
+        return "courseId: " + this.courseId + " / userId: " + this.userId;
+    }
 }

@@ -1,11 +1,8 @@
-package at.codersbay.courseapp.api.booking.newBooking;
+package at.codersbay.courseapp.api.booking.delete;
 
-public class NewBookingDTO {
-
+public class DeleteBookingDTO {
     private Long courseId;
-
     private Long userId;
-
 
     public Long getCourseId() {
         return courseId;
@@ -22,5 +19,4 @@ public class NewBookingDTO {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 }

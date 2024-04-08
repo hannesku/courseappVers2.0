@@ -2,7 +2,9 @@ package at.codersbay.courseapp.api.booking.newBooking;
 
 import at.codersbay.courseapp.api.ResponseBody;
 import at.codersbay.courseapp.api.booking.Booking;
+import at.codersbay.courseapp.api.booking.BookingId;
 import at.codersbay.courseapp.api.booking.BookingRepository;
+import at.codersbay.courseapp.api.booking.BookingResponseBody;
 import at.codersbay.courseapp.api.course.CourseRepository;
 import at.codersbay.courseapp.api.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +34,40 @@ public class NewBookingController {
     @PostMapping("/")
     public ResponseEntity<ResponseBody> newBooking (
             @RequestBody
-            NewBookingDTO newBookingDTO
-    ) {
+            NewBookingDTO newBookingDTO) {
+
+        BookingResponseBody bookingResponseBody = new BookingResponseBody();
 
         if (newBookingDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        BookingId bookingId = new BookingId(newBookingDTO.getCourseId(), newBookingDTO.getUserId());
 
-        if (newBookingDTO.isBooked()) {
-            Booking newBooking = new Booking();
-            newBooking.setUser(userRepository.findById(newBookingDTO.getUserId()).get());
-            newBooking.setCourse(courseRepository.findById(newBookingDTO.getCourseId()).get());
-            this.bookingRepository.save(newBooking);
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+
+        if (optionalBooking.isPresent()) {
+            bookingResponseBody.addErrorMessage("The booking with " + bookingId + " exists already.");
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.BAD_REQUEST);
         }
 
-    return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+
+            Booking newBooking = optionalBooking.get();
+//            newBooking.setUser(userRepository.findById(newBookingDTO.getUserId()).get());
+//            newBooking.setCourse(courseRepository.findById(newBookingDTO.getCourseId()).get());
+            this.bookingRepository.save(newBooking);
+
+        optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isEmpty()) {
+            bookingResponseBody.addErrorMessage("The booking for " + bookingId + " could not be saved.");
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+
+
 
 
     }
