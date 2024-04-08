@@ -1,9 +1,6 @@
 package at.codersbay.courseapp.api;
 
-import at.codersbay.courseapp.api.user.exceptions.EmailAlreadyExistsExeption;
-import at.codersbay.courseapp.api.user.exceptions.EmailIsNoEmailException;
-import at.codersbay.courseapp.api.user.exceptions.IdIsEmptyException;
-import at.codersbay.courseapp.api.user.exceptions.PasswordInsecureExeption;
+import at.codersbay.courseapp.api.user.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             = {IdIsEmptyException.class,
             EmailIsNoEmailException.class,
             PasswordInsecureExeption.class,
-            EmailAlreadyExistsExeption.class})
+            EmailAlreadyExistsExeption.class,
+            EmailIsEmptyException.class,
+            PasswordIsEmptyException.class})
     protected ResponseEntity<Object> handleConflict(
             Exception ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();

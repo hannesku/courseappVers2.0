@@ -23,62 +23,101 @@ public class UpdateUserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PatchMapping("/")
-    public ResponseEntity<UserResponseBody> updateUser (
+
+    @PatchMapping("/email/")
+    public ResponseEntity<UserResponseBody> updateUserEmail(
             @RequestBody
-            UpdateUserDTO updateUserDTO) throws EmailAlreadyExistsExeption, EmailIsNoEmailException,
-            PasswordInsecureExeption {
+            UpdateUserEmailDTO updateUserEmailDTO)
+            throws EmailAlreadyExistsExeption, EmailIsNoEmailException, EmailIsEmptyException {
 
         UserResponseBody userResponseBody = new UserResponseBody();
 
        // CHECK IF REQUESTBODY = EMPTY
-        if (ObjectUtils.isEmpty(updateUserDTO.getId())) {
-            throw new IdIsEmptyException("Id is missing in Requestbody.");
-        } else if (StringUtils.isEmpty(updateUserDTO.getEmail()) && StringUtils.isEmpty(updateUserDTO.getPassword())) {
-            userResponseBody.addErrorMessage("No update-data in requestbody.");
-            return new ResponseEntity<>(userResponseBody, HttpStatus.NO_CONTENT);
+        if (ObjectUtils.isEmpty(updateUserEmailDTO.getId())) {
+            throw new IdIsEmptyException("Id is missing in requestbody.");
+        } else if (StringUtils.isEmpty(updateUserEmailDTO.getEmail())) {
+            throw new EmailIsEmptyException("No email in requestbody.");
+//          userResponseBody.addErrorMessage("No email in requestbody.");
+//          return new ResponseEntity<>(userResponseBody, HttpStatus.NO_CONTENT);
         }
 
         // CHECK IF USER EXISTS
-        Optional<User> optionalUser = userRepository.findById(updateUserDTO.getId());
-        User updatetedUser = null;
+        Optional<User> optionalUser = userRepository.findById(updateUserEmailDTO.getId());
+        User updateUser = null;
         if (optionalUser.isEmpty()) {
-            userResponseBody.addErrorMessage("The user with id " + updateUserDTO.getId() + " doesn't exist.");
+            userResponseBody.addErrorMessage("The user with id " + updateUserEmailDTO.getId() + " doesn't exist.");
             return new ResponseEntity<>(userResponseBody, HttpStatus.NOT_FOUND);
         } else  {
-            updatetedUser = optionalUser.get();
+            updateUser = optionalUser.get();
         }
 
         // VALIDATE & UPDATE EMAIL
         String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
                 + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
-        if (!StringUtils.isEmpty(updateUserDTO.getEmail()) && userRepository.findByEmail(updateUserDTO.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsExeption("The email-adress " + updateUserDTO.getEmail() + " already exists.");
-        } else if (!StringUtils.isEmpty(updateUserDTO.getEmail()) && !updateUserDTO.getEmail().matches(regexPatternEmail)) {
+        if (!StringUtils.isEmpty(updateUserEmailDTO.getEmail())
+                && userRepository.findByEmail(updateUserEmailDTO.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsExeption("The email-adress " + updateUserEmailDTO.getEmail() + " already exists.");
+        } else if (!StringUtils.isEmpty(updateUserEmailDTO.getEmail())
+                && !updateUserEmailDTO.getEmail().matches(regexPatternEmail)) {
             throw new EmailIsNoEmailException("The email has no valuable format (name@abcd.efg).");
         } else {
-            updatetedUser.setEmail(updateUserDTO.getEmail());
+            updateUser.setEmail(updateUserEmailDTO.getEmail());
         }
 
-        // VALIDATE & UPDATE PASSWORD:
-        if (!StringUtils.isEmpty(updateUserDTO.getPassword()) &&
-                updateUserDTO.getPassword().length()<8 ||
-                !StringUtils.isMixedCase(updateUserDTO.getPassword()) ||
-                !updateUserDTO.getPassword().matches(".*\\d.*")) {
-            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min.8 char., mixed case, contains also numbers.");
-        } else {
-            updatetedUser.setPassword(updateUserDTO.getPassword());
-        }
+        this.userRepository.save(updateUser);
 
-
-        this.userRepository.save(updatetedUser);
-
-        userResponseBody.addMessage("The user with id " + updateUserDTO.getId() + " was updated.");
-        userResponseBody.setUser(updatetedUser);
+        userResponseBody.addMessage("The email of user " + updateUserEmailDTO.getId() + " was updated.");
+        userResponseBody.setUser(updateUser);
         return new ResponseEntity<>(userResponseBody, HttpStatus.OK);
 
     }
+
+    @PatchMapping("/password/")
+    public ResponseEntity<UserResponseBody> updateUserPassword (
+            @RequestBody
+            UpdateUserPasswordDTO updateUserPasswordDTO)
+            throws PasswordInsecureExeption, PasswordIsEmptyException {
+
+        UserResponseBody userResponseBody = new UserResponseBody();
+
+        // CHECK IF REQUESTBODY = EMPTY
+        if (ObjectUtils.isEmpty(updateUserPasswordDTO.getId())) {
+            throw new IdIsEmptyException("Id is missing in Requestbody.");
+        } else if (StringUtils.isEmpty(updateUserPasswordDTO.getPassword())) {
+            throw new PasswordIsEmptyException("No password in requestbody.");
+//            userResponseBody.addErrorMessage("No password in requestbody.");
+//            return new ResponseEntity<>(userResponseBody, HttpStatus.NO_CONTENT);
+        }
+
+        // CHECK IF USER EXISTS
+        Optional<User> optionalUser = userRepository.findById(updateUserPasswordDTO.getId());
+        User updateUser = null;
+        if (optionalUser.isEmpty()) {
+            userResponseBody.addErrorMessage("The user with id " + updateUserPasswordDTO.getId() + " doesn't exist.");
+            return new ResponseEntity<>(userResponseBody, HttpStatus.NOT_FOUND);
+        } else  {
+            updateUser = optionalUser.get();
+        }
+
+        // VALIDATE & UPDATE PASSWORD:
+        if (!StringUtils.isEmpty(updateUserPasswordDTO.getPassword()) &&
+                updateUserPasswordDTO.getPassword().length()<8 ||
+                !StringUtils.isMixedCase(updateUserPasswordDTO.getPassword()) ||
+                !updateUserPasswordDTO.getPassword().matches(".*\\d.*")) {
+            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min.8 char., mixed case, contains also numbers.");
+        } else {
+            updateUser.setPassword(updateUserPasswordDTO.getPassword());
+        }
+
+        this.userRepository.save(updateUser);
+
+        userResponseBody.addMessage("The password of user " + updateUserPasswordDTO.getId() + " was updated.");
+        userResponseBody.setUser(updateUser);
+        return new ResponseEntity<>(userResponseBody, HttpStatus.OK);
+
+    }
+
 
 
 }
