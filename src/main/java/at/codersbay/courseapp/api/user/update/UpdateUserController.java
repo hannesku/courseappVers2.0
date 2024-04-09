@@ -20,6 +20,7 @@ import java.util.Optional;
 @RequestMapping("api/user/")
 public class UpdateUserController {
 
+    private static final int minPasswordLength = 8;
     private static final String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
@@ -28,10 +29,8 @@ public class UpdateUserController {
 
 
     /**
-     *
      * @param updateUserEmailDTO
      * @return
-     *
      * @throws EmailAlreadyExistsExeption
      * @throws EmailIsNoEmailException
      * @throws EmailIsEmptyException
@@ -44,7 +43,7 @@ public class UpdateUserController {
 
         UserResponseBody userResponseBody = new UserResponseBody();
 
-       // CHECK IF REQUESTBODY = EMPTY
+        // CHECK IF REQUESTBODY = EMPTY
         if (ObjectUtils.isEmpty(updateUserEmailDTO.getId())) {
             throw new IdIsEmptyException("Id is missing in requestbody.");
         } else if (StringUtils.isEmpty(updateUserEmailDTO.getEmail())) {
@@ -59,7 +58,7 @@ public class UpdateUserController {
         if (optionalUser.isEmpty()) {
             userResponseBody.addErrorMessage("The user with id " + updateUserEmailDTO.getId() + " doesn't exist.");
             return new ResponseEntity<>(userResponseBody, HttpStatus.NOT_FOUND);
-        } else  {
+        } else {
             updateUser = optionalUser.get();
         }
 
@@ -83,7 +82,7 @@ public class UpdateUserController {
     }
 
     @PatchMapping("/password/")
-    public ResponseEntity<UserResponseBody> updateUserPassword (
+    public ResponseEntity<UserResponseBody> updateUserPassword(
             @RequestBody
             UpdateUserPasswordDTO updateUserPasswordDTO)
             throws PasswordInsecureExeption, PasswordIsEmptyException {
@@ -105,16 +104,16 @@ public class UpdateUserController {
         if (optionalUser.isEmpty()) {
             userResponseBody.addErrorMessage("The user with id " + updateUserPasswordDTO.getId() + " doesn't exist.");
             return new ResponseEntity<>(userResponseBody, HttpStatus.NOT_FOUND);
-        } else  {
+        } else {
             updateUser = optionalUser.get();
         }
 
         // VALIDATE & UPDATE PASSWORD:
         if (!StringUtils.isEmpty(updateUserPasswordDTO.getPassword()) &&
-                updateUserPasswordDTO.getPassword().length()<8 ||
+                updateUserPasswordDTO.getPassword().length() < minPasswordLength ||
                 !StringUtils.isMixedCase(updateUserPasswordDTO.getPassword()) ||
                 !updateUserPasswordDTO.getPassword().matches(".*\\d.*")) {
-            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min.8 char., mixed case, contains also numbers.");
+            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min. " + minPasswordLength + " char., mixed case, contains also numbers.");
         } else {
             updateUser.setPassword(updateUserPasswordDTO.getPassword());
         }
@@ -126,7 +125,6 @@ public class UpdateUserController {
         return new ResponseEntity<>(userResponseBody, HttpStatus.OK);
 
     }
-
 
 
 }
