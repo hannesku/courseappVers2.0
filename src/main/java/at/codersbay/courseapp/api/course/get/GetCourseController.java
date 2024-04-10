@@ -22,7 +22,9 @@ public class GetCourseController {
     private CourseRepository courseRepository;
 
     /**
-     * @return Responsentity with StatusCode 200. Respons List<Course>
+     * Rest Path: "localhost/8081/api/course/"
+     * Method finds all courses in database.
+     * @return Responsentity with StatusCode 200. Response includes List<Course>
      */
     @GetMapping("/")
     public ResponseEntity<List<Course>> getAll() {
