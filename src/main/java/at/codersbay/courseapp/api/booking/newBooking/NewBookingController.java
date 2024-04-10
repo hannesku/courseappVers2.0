@@ -81,7 +81,7 @@ public class NewBookingController {
         int maxParticipants = chosenCourse.getMaxParticipants();
         int numberOfBookedUsers = chosenCourse.getBookings().size();
 
-        System.out.println("chosenCourse: maxParticipants = " + maxParticipants + ", nummberOfBookedUsers = " + numberOfBookedUsers);
+//        System.out.println("chosenCourse: maxParticipants = " + maxParticipants + ", nummberOfBookedUsers = " + numberOfBookedUsers);
 
         if (numberOfBookedUsers >= maxParticipants) {
             bookingResponseBody.addErrorMessage("The course with id " + newBookingDTO.getCourseId() + " is full.");

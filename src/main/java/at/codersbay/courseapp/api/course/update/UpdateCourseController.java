@@ -66,7 +66,7 @@ public class UpdateCourseController {
             return new ResponseEntity<>(courseResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        courseResponseBody.addMessage("The course with id " + id + " was updated to:");
+        courseResponseBody.addMessage("The course with id " + id + " was updated.");
         courseResponseBody.setCourse(updatedCourse);
         return new ResponseEntity<>(courseResponseBody, HttpStatus.OK);
 

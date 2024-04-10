@@ -1,6 +1,7 @@
 package at.codersbay.courseapp.api.course.get;
 
 
+import at.codersbay.courseapp.api.booking.BookingRepository;
 import at.codersbay.courseapp.api.course.Course;
 import at.codersbay.courseapp.api.course.CourseRepository;
 import at.codersbay.courseapp.api.course.CourseResponseBody;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/course/")
@@ -69,12 +69,23 @@ public class GetCourseController {
 
         CourseResponseBody courseResponseBody = new CourseResponseBody();
         courseResponseBody.setCourse(course);
-        courseResponseBody.addMessage("The course with the title \"" + title + "\" does exist.");
+        courseResponseBody.addMessage("The course with the title '" + title + "' does exist.");
         ResponseEntity response = new ResponseEntity<>(courseResponseBody, HttpStatus.FOUND);
 
         // ?? same as before but this time with <>   ??
 
         return response;
+
+
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<Set<Course>> getAvailableCourses() {
+
+
+        Set<Course> availableCourses = new HashSet<>();
+
+        return null;
 
 
     }
