@@ -58,6 +58,11 @@ public class UpdateCourseController {
             updatedCourse.setMaxParticipants(updateCourseDTO.getMaxParticipants());
         }
 
+        // Exceptionhandling startDate and endDate !!
+
+        updatedCourse.setStartDate(updateCourseDTO.getStartDate());
+        updatedCourse.setEndDate(updateCourseDTO.getEndDate());
+
         this.courseRepository.save(updatedCourse);
 
         optionalCourse = courseRepository.findById(id);

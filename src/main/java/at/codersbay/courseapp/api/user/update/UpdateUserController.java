@@ -3,6 +3,7 @@ package at.codersbay.courseapp.api.user.update;
 import at.codersbay.courseapp.api.user.User;
 import at.codersbay.courseapp.api.user.UserRepository;
 import at.codersbay.courseapp.api.user.UserResponseBody;
+import at.codersbay.courseapp.api.user.create.CreateUserService;
 import at.codersbay.courseapp.api.user.exceptions.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +21,6 @@ import java.util.Optional;
 @RequestMapping("api/user/")
 public class UpdateUserController {
 
-    private static final int minPasswordLength = 8;
-    private static final String regexPatternEmail = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
-            + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
     @Autowired
     private UserRepository userRepository;
@@ -67,7 +65,7 @@ public class UpdateUserController {
                 && userRepository.findByEmail(updateUserEmailDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsExeption("The email-adress " + updateUserEmailDTO.getEmail() + " already exists.");
         } else if (!StringUtils.isEmpty(updateUserEmailDTO.getEmail())
-                && !updateUserEmailDTO.getEmail().matches(regexPatternEmail)) {
+                && !updateUserEmailDTO.getEmail().matches(CreateUserService.regexPatternEmail)) {
             throw new EmailIsNoEmailException("The email has no valuable format (name@abcd.efg).");
         } else {
             updateUser.setEmail(updateUserEmailDTO.getEmail());
@@ -110,10 +108,10 @@ public class UpdateUserController {
 
         // VALIDATE & UPDATE PASSWORD:
         if (!StringUtils.isEmpty(updateUserPasswordDTO.getPassword()) &&
-                updateUserPasswordDTO.getPassword().length() < minPasswordLength ||
+                updateUserPasswordDTO.getPassword().length() < CreateUserService.minPasswordLength ||
                 !StringUtils.isMixedCase(updateUserPasswordDTO.getPassword()) ||
                 !updateUserPasswordDTO.getPassword().matches(".*\\d.*")) {
-            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min. " + minPasswordLength + " char., mixed case, contains also numbers.");
+            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min. " + CreateUserService.minPasswordLength + " char., mixed case, contains also numbers.");
         } else {
             updateUser.setPassword(updateUserPasswordDTO.getPassword());
         }

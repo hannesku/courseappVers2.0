@@ -88,8 +88,6 @@ public class NewBookingController {
             return new ResponseEntity<>(bookingResponseBody, HttpStatus.BAD_REQUEST);
         }
 
-//   ??????? THIS DOESN'T WORK - WHY NOT ???????????
-//      Booking newBooking = optionalBooking.get();
 
         Booking newBooking = new Booking(chosenCourse, chosenUser);
         this.bookingRepository.save(newBooking);

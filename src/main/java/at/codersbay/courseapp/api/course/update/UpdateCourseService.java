@@ -20,9 +20,12 @@ public class UpdateCourseService {
         if (!StringUtils.isEmpty(description)) {
             updatedCourse.setDescription(description);
         }
-        if (maxParticipants > 0 && maxParticipants <= 25 ) {
+        if (maxParticipants > 0) {
             updatedCourse.setMaxParticipants(maxParticipants);
         }
+
+        // Exception: more bookings than maxParticipants.
+
 
         return courseRepository.save(updatedCourse);
     }

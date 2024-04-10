@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -31,20 +32,45 @@ public class Course {
     private String description;
 
     @Column
+    private LocalDate startDate;
+
+    @Column
+    private LocalDate endDate;
+
+    @Column
     private int maxParticipants;
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Booking> bookings;
 
+
     public Course() {
 
     }
 
-    public Course (String title, String description, int maxParticipants) {
+    public Course (String title, String description, int maxParticipants, LocalDate startDate, LocalDate endDate) {
         this.title = title;
         this.description = description;
         this.maxParticipants = maxParticipants;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Long getId() {

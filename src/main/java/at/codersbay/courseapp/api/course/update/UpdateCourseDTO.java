@@ -1,10 +1,32 @@
 package at.codersbay.courseapp.api.course.update;
 
+import java.time.LocalDate;
+
 public class UpdateCourseDTO {
     private Long id;
     private String title;
     private String description;
     private int maxParticipants;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 
     public Long getId() {
         return id;

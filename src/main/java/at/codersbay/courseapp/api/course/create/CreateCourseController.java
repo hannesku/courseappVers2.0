@@ -51,9 +51,14 @@ public class CreateCourseController {
             newCourse = this.courseService.createCourse(
                 createCourseDTO.getTitle(),
                 createCourseDTO.getDescription(),
-                createCourseDTO.getMaxParticipants());
+                createCourseDTO.getMaxParticipants(),
+                createCourseDTO.getStartDate(),
+                createCourseDTO.getEndDate());
 
-        } catch (TitleIsEmptyException | DescriptionIsEmptyException | NumberOfParticipantsException exception) {
+        } catch (TitleIsEmptyException |
+                 DescriptionIsEmptyException |
+                 NumberOfParticipantsException |
+                 IncorrectDateException exception) {
             courseResponseBody.addErrorMessage(exception.getMessage());
             return new ResponseEntity<>(courseResponseBody, HttpStatus.BAD_REQUEST);
         }

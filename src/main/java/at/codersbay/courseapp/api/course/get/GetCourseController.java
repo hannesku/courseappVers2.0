@@ -8,12 +8,11 @@ import at.codersbay.courseapp.api.course.CourseResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
+
 
 @RestController
 @RequestMapping("/api/course/")
@@ -22,6 +21,9 @@ public class GetCourseController {
     @Autowired
     private CourseRepository courseRepository;
 
+    /**
+     * @return Responsentity with StatusCode 200. Respons List<Course>
+     */
     @GetMapping("/")
     public ResponseEntity<List<Course>> getAll() {
         List<Course> allCourses = courseRepository.findAll();
@@ -35,7 +37,7 @@ public class GetCourseController {
         Optional<Course> optionalCourse = this.courseRepository.findById(id);
 
         if (!optionalCourse.isPresent()) {
-             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             // Diff: return ResponseEntity.noContent();
         }
 
@@ -76,17 +78,53 @@ public class GetCourseController {
 
         return response;
 
+    }
+
+    @GetMapping("/ongoing")
+    public ResponseEntity<Set<Course>> getAllOngoingCoursesAtDate(
+            @RequestBody
+            GetCourseDTO getCourseDTO) {
+
+        List<Course> allCourses = courseRepository.findAll();
+        Set<Course> ongoingCourses = new HashSet<>();
+
+        for (Course course : allCourses) {
+            if (getCourseDTO.getSearchDate().isAfter(course.getStartDate())
+                    && getCourseDTO.getSearchDate().isBefore(course.getEndDate())) {
+                ongoingCourses.add(course);
+            }
+        }
+
+        return ResponseEntity.ok(ongoingCourses);
 
     }
 
+
     @GetMapping("/available")
-    public ResponseEntity<Set<Course>> getAvailableCourses() {
+    public ResponseEntity<Set<Course>> getAvailableCoursesAfterDate(
+            @RequestBody
+            GetCourseDTO getCourseDTO
+    ) {
 
-
+        List<Course> allCourses = courseRepository.findAll();
         Set<Course> availableCourses = new HashSet<>();
 
-        return null;
+        int maxParticipants;
+        int numberOfBookings;
+        LocalDate startDate;
+        LocalDate searchDate = getCourseDTO.getSearchDate();
 
+        for (Course course : allCourses) {
+            maxParticipants = course.getMaxParticipants();
+            numberOfBookings = course.getBookings().size();
+            startDate = course.getStartDate();
+
+            if (numberOfBookings < maxParticipants && startDate.isAfter(searchDate)) {
+                availableCourses.add(course);
+            }
+        }
+
+        return ResponseEntity.ok(availableCourses);
 
     }
 
