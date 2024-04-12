@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +36,28 @@ public class NewBookingController {
     BookingRepository bookingRepository;
 
 
+    /**
+     * Rest Path - POST-Request: "localhost:8081/api/booking/"
+     * Method creates a new booking for a user(student) to a specific course.
+     * The unique bookingId is embedded and defined as a combination of courseId and userId.
+     * The current date is saved together with the new booking to the database.
+     *
+     * @param newBookingDTO - The RequestBody should be a JSON object with the parameters: courseId (Long), userId (Long). i.e.:
+     *                      {
+     *                      "courseId" : 2,
+     *                      "userId": 1
+     *                      }
+     * @return - ResponseBody incl. the newly created booking, a message, StatusCode (200, if successful)
+     * Note: A message is added in case the course has started already.
+     * possible Exceptions and StatusCodes in testing order (No booking in ResponseBody in that case):
+     * - Empty RequestBody: StatusCode 400 (BAD_REQUEST)
+     * - Booking exists already: errorMessage, StatusCode 400 (BAD_REQUEST)
+     * - Course doesn't exist (wrong CourseId): errorMessage, statusCode 404 (NOT_FOUND)
+     * - User doesn't exist (wrong UserId): errorMessage, statusCode 404 (NOT_FOUND)
+     * - Course has finished already: errorMessage, StatusCode 409 (CONFLICT)
+     * - Course is full (maxParticipants reached): errorMessage, StatusCode 409 (CONFLICT)
+     * - Booking could not be saved in database: errorMessage, StatusCode 500 (INTERNAL_SERVER_ERROR)
+     */
     @PostMapping("/")
     public ResponseEntity<ResponseBody> newBooking(
             @RequestBody
@@ -76,6 +99,17 @@ public class NewBookingController {
         }
         User chosenUser = optionalUser.get();
 
+        // CHECK IF COURSE HAS FINISHED / STARTED ALREADY:
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = optionalCourse.get().getStartDate();
+        LocalDate endDate = optionalCourse.get().getEndDate();
+        if (endDate.isBefore(today)) {
+            bookingResponseBody.addErrorMessage("The course with the id " + newBookingDTO.getCourseId() + " has finished already on " + endDate + ".");
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.CONFLICT);
+        }
+        if (startDate.isBefore(today)) {
+            bookingResponseBody.addMessage("NOTE!! The course with the id " + newBookingDTO.getCourseId() + " has started already on " + startDate + "!");
+        }
 
         // CHECK FOR MAX USERS/PARTICIPANTS PER COURSE:
         int maxParticipants = chosenCourse.getMaxParticipants();
@@ -85,7 +119,7 @@ public class NewBookingController {
 
         if (numberOfBookedUsers >= maxParticipants) {
             bookingResponseBody.addErrorMessage("The course with id " + newBookingDTO.getCourseId() + " is full.");
-            return new ResponseEntity<>(bookingResponseBody, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.CONFLICT;
         }
 
 
@@ -100,7 +134,7 @@ public class NewBookingController {
             return new ResponseEntity<>(bookingResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(bookingResponseBody, HttpStatus.OK);
 
 
     }

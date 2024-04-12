@@ -28,7 +28,7 @@ public class DeleteCourseController {
      * Method finds the course of a specific id in the database, checks if it exists and if so removes it from the database.
      *
      * @param id - Id (int) of the wanted course
-     * @return - ResponseBody incl. pos. response message, StatusCode 200 (OK)
+     * @return - ResponseBody incl. confirmation message, StatusCode 200 (OK)
      * - ResponseBody incl errorMessage if the course doesn't exist in the database, StatusCode 404 (NOT_FOUND)
      * - ResponseBody incl errorMessage if the course exists but couldn't be deleted, StatusCode 503 (SERVICE_UNAVAILABLE)
      */

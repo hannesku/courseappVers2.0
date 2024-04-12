@@ -21,8 +21,22 @@ public class DeleteBookingController {
     @Autowired
     private BookingRepository bookingRepository;
 
+
+    /**
+     * Rest Path - DELETE-REQUEST: "localhost:8081/api/booking/"
+     * Method finds the booking to the unique combination of courseId and userId and deletes the specific booking if it exists.
+     *
+     * @param deleteBookingDTO - The RequestBody should be a JSON object with the parameters: courseId (Long), userId (Long). i.e.:
+     *                         {
+     *                         "courseId" : 2,
+     *                         "userId": 1
+     *                         }
+     * @return - ResponseBody incl. confirming response message, StatusCode 200 (OK)
+     * - in case the booking can't be found in the database: ResponseBody incl. errorMessage, StatusCode 404 (NOT_FOUND)
+     * - in case the booking exists but couldn't be deleted: ResponseBody incl. errorMessage, StatusCode 503 (SERVICE_UNAVAILABLE)
+     */
     @DeleteMapping("/")
-    public ResponseEntity<BookingResponseBody> deleteBooking (
+    public ResponseEntity<BookingResponseBody> deleteBooking(
             @RequestBody
             DeleteBookingDTO deleteBookingDTO) {
 
@@ -42,10 +56,10 @@ public class DeleteBookingController {
         optionalBooking = bookingRepository.findById(bookingId);
         if (optionalBooking.isPresent()) {
             bookingResponseBody.addErrorMessage("Could not delete booking with " + bookingId + " .");
-            return new ResponseEntity<>(bookingResponseBody, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.SERVICE_UNAVAILABLE);
         }
-            bookingResponseBody.addMessage("Booking with " + bookingId + " deleted.");
-            return new ResponseEntity<>(bookingResponseBody, HttpStatus.OK);
+        bookingResponseBody.addMessage("Booking with " + bookingId + " deleted.");
+        return new ResponseEntity<>(bookingResponseBody, HttpStatus.OK);
 
     }
 
