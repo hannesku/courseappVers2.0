@@ -3,7 +3,7 @@ package at.codersbay.courseapp.api.course.update;
 import java.time.LocalDate;
 
 public class UpdateCourseDTO {
-    private Long id;
+
     private String title;
     private String description;
     private int maxParticipants;
@@ -26,14 +26,6 @@ public class UpdateCourseDTO {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {

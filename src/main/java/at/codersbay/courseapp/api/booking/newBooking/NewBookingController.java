@@ -114,12 +114,9 @@ public class NewBookingController {
         // CHECK FOR MAX USERS/PARTICIPANTS PER COURSE:
         int maxParticipants = chosenCourse.getMaxParticipants();
         int numberOfBookedUsers = chosenCourse.getBookings().size();
-
-//        System.out.println("chosenCourse: maxParticipants = " + maxParticipants + ", nummberOfBookedUsers = " + numberOfBookedUsers);
-
         if (numberOfBookedUsers >= maxParticipants) {
             bookingResponseBody.addErrorMessage("The course with id " + newBookingDTO.getCourseId() + " is full.");
-            return new ResponseEntity<>(bookingResponseBody, HttpStatus.CONFLICT;
+            return new ResponseEntity<>(bookingResponseBody, HttpStatus.CONFLICT);
         }
 
 
@@ -134,8 +131,8 @@ public class NewBookingController {
             return new ResponseEntity<>(bookingResponseBody, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        bookingResponseBody.setBooking(newBooking);
         return new ResponseEntity<>(bookingResponseBody, HttpStatus.OK);
-
 
     }
 

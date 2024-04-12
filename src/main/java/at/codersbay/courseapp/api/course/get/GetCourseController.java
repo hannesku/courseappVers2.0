@@ -39,7 +39,7 @@ public class GetCourseController {
      * Rest Path for GET-Request: "localhost:8081/api/course/{id}"
      * Method finds the course of a specific id in the database and checks if the wanted course actually exists.
      *
-     * @param id - Id (int) of the wanted course
+     * @param id - Id (Long) of the wanted course
      * @return - ResponseBody incl. the wanted course, a pos. response message and StatusCode 302 (FOUND).
      * - ResponseEntity with StatusCode 404 (NOT_FOUND) if the course doesn't exist.
      */
