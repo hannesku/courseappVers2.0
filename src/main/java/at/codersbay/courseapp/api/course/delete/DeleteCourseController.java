@@ -22,8 +22,18 @@ public class DeleteCourseController {
     @Autowired
     private CourseRepository courseRepository;
 
+
+    /**
+     * Rest Path for DELETE-Request: "localhost:8081/api/course/{id}"
+     * Method finds the course of a specific id in the database, checks if it exists and if so removes it from the database.
+     *
+     * @param id - Id (int) of the wanted course
+     * @return - ResponseBody incl. pos. response message, StatusCode 200 (OK)
+     * - ResponseBody incl errorMessage if the course doesn't exist in the database, StatusCode 404 (NOT_FOUND)
+     * - ResponseBody incl errorMessage if the course exists but couldn't be deleted, StatusCode 503 (SERVICE_UNAVAILABLE)
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseBody> deleteCourseById (
+    public ResponseEntity<ResponseBody> deleteCourseById(
             @PathVariable
             Long id) {
 
@@ -51,8 +61,18 @@ public class DeleteCourseController {
 
     }
 
+
+    /**
+     * Rest Path for DELETE-Request: "localhost:8081/api/course/{title}"
+     * Method finds the course of a specific title in the database, checks if it exists and if yes removes it from the database.
+     *
+     * @param title - Title (String) of the wanted course
+     * @return - ResponseBody incl. pos. response message, StatusCode 200 (OK)
+     * - ResponseBody incl errorMessage if the course doesn't exist in the database, StatusCode 404 (NOT_FOUND)
+     * - ResponseBody incl errorMessage if the course was found but couldn't be deleted, StatusCode 503 (SERVICE_UNAVAILABLE)
+     */
     @DeleteMapping("title/{title}")
-    public ResponseEntity<ResponseBody> deleteCourseByTitle (
+    public ResponseEntity<ResponseBody> deleteCourseByTitle(
             @PathVariable
             String title) {
 
