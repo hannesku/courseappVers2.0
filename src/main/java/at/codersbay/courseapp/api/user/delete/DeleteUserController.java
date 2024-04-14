@@ -20,6 +20,17 @@ public class DeleteUserController {
     @Autowired
     private UserRepository userRepository;
 
+
+    /**
+     * Rest Path - DELETE-Rewuest: "localhost:8081/api/user/{id}"
+     * Method finds the user of a specific id in the database, checks if it exists and if it does removes it from the database.
+     * NOTE: If bookings of the wanted user exist, they will also be removed from the bookings-List.
+     *
+     * @param id - userId (Long) of wanted user
+     * @return - ResponseBody incl. confirmation message, StatusCode 200 (OK)
+     *  - ResponseBody incl errorMessage if the user doesn't exist in the database, StatusCode 404 (NOT_FOUND)
+     *  - ResponseBody incl errorMessage if the user exists but couldn't be deleted, StatusCode 503 (SERVICE_UNAVAILABLE)
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<UserResponseBody> deleteUserById (
             @PathVariable
@@ -40,7 +51,7 @@ public class DeleteUserController {
 
         if (optionalUser.isPresent()) {
             userResponseBody.addErrorMessage("Could not delete user with id " + id + " .");
-            return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(userResponseBody, HttpStatus.SERVICE_UNAVAILABLE);
         }
             userResponseBody.addMessage("User with id " + id + " deleted.");
             return new ResponseEntity<>(userResponseBody, HttpStatus.OK);

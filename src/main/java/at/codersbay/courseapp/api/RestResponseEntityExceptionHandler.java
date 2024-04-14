@@ -15,8 +15,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(value
             = {IdIsEmptyException.class,
             EmailIsNoEmailException.class,
-            PasswordInsecureExeption.class,
-            EmailAlreadyExistsExeption.class,
+            PasswordInsecureException.class,
+            EmailAlreadyExistsException.class,
             EmailIsEmptyException.class,
             PasswordIsEmptyException.class})
     protected ResponseEntity<Object> handleConflict(

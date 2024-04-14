@@ -22,12 +22,28 @@ public class GetUserController {
     @Autowired
     private UserRepository userRepository;
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/user/"
+     * Method finds all users in the database.
+     *
+     * @return - ResponseEntity with StatusCode 200 (OK). The response includes a List<User>.
+     */
     @GetMapping("/")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
         return ResponseEntity.ok(allUsers);
     }
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/user/{id}"
+     * Method finds the user of a specific id in the database and checks if the wanted user actually exists.
+     *
+     * @param id - Id (Long) of the wanted user
+     * @return - ResponseEntity with StatusCode 200 (OK). The response includes the wanted user as JSON-Object.
+     * - if the user doesn't exist in the database: ResponseBody with errorMessage and StatusCode 302 (NOT_FOUND)
+     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById (
             @PathVariable

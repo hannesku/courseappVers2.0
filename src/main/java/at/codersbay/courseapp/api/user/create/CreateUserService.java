@@ -22,9 +22,9 @@ public class CreateUserService {
             EmailIsNoEmailException,
             PasswordIsEmptyException,
             UsernameIsEmptyException,
-            UserAlreadyExistsExeption,
-            EmailAlreadyExistsExeption,
-            PasswordInsecureExeption {
+            UserAlreadyExistsException,
+            EmailAlreadyExistsException,
+            PasswordInsecureException {
 
         if (StringUtils.isEmpty(username)) {
             throw new UsernameIsEmptyException("Username is missing.");
@@ -35,11 +35,11 @@ public class CreateUserService {
         } else if (!email.matches(regexPatternEmail)) {
             throw new EmailIsNoEmailException("The email has no valuable format (name@abcd.efg).");
         } else if (userRepository.findByUsernameIgnoreCase(username).isPresent()) {
-            throw new UserAlreadyExistsExeption("The username " + username + " already exists.");
+            throw new UserAlreadyExistsException("The username " + username + " already exists.");
         } else if (userRepository.findByEmail(email).isPresent()) {
-            throw new EmailAlreadyExistsExeption("The email-adress " + email + " already exists.");
+            throw new EmailAlreadyExistsException("The email-adress " + email + " already exists.");
         } else if (password.length() < minPasswordLength || !StringUtils.isMixedCase(password) || !password.matches(".*\\d.*")) {
-            throw new PasswordInsecureExeption("The password is insecure. Necessary criteria: min. " + minPasswordLength + " char., mixed case, contains also numbers.");
+            throw new PasswordInsecureException("The password is insecure. Necessary criteria: min. " + minPasswordLength + " char., mixed case, contains also numbers.");
         }
 
         User newUser = new User(username, password, email);

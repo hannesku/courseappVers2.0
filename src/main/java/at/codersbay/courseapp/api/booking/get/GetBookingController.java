@@ -29,6 +29,13 @@ public class GetBookingController {
     @Autowired
     BookingRepository bookingRepository;
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/booking/"
+     * Method finds all bookings in the database and returns them as a List of JSON-Objects.
+     *
+     * @return - ResponseEntity with StatusCode 200 (OK). The Response includes a List<Booking>
+     */
     @GetMapping("/")
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> allBookings = bookingRepository.findAll();
@@ -36,6 +43,18 @@ public class GetBookingController {
         return ResponseEntity.ok(allBookings);
     }
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/booking/{courseId}/{userId}"
+     * Method finds the booking of a specific bookingId in the database.
+     * The unique bookingId is embedded and defined as a combination of courseId and userId.
+     * Those 2 Ids have to be provided as pathVariables in the correct order (courseId / userId).
+     *
+     * @param courseId - Id (Long) of the booked course
+     * @param userId - Id (long) of a specific User (Student) of the course.
+     * @return - ResponseBody incl. the wanted booking and StatusCode 200 (OK).
+     * - In case the wanted booking doesn't exist in the database: errorMessage and StatusCode 302 (NOT_FOUND)
+     */
     @GetMapping("/{courseId}/{userId}")
     public ResponseEntity<BookingResponseBody> getBookingByCourseIdUserId(
             @PathVariable
@@ -58,6 +77,15 @@ public class GetBookingController {
         return new ResponseEntity<>(bookingResponseBody, HttpStatus.OK);
     }
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/booking/user/{id}"
+     * Method finds all bookings of a specific user in the database.
+     *
+     * @param id - userId (Long) of wanted user.
+     * @return - ResponseBody incl. a List of all bookings of the wanted user and StatusCode 200 (OK).
+     * - In case the wanted user doesn't exist in the database: errorMessage and StatusCode 302 (NOT_FOUND).
+     */
     @GetMapping("/user/{id}")
     public ResponseEntity<UserBookingResponseBody> getBookingsOfUser(
             @PathVariable
@@ -90,8 +118,18 @@ public class GetBookingController {
 
     }
 
+
+    /**
+     * Rest Path - GET-Request: "localhost:8081/api/booking/course/{id}"
+     * Method finds all bookings for a specific course in the dagebase.
+     *
+     *
+     * @param id - courseId (Long) of wanted course
+     * @return - ResponseBody incl. a List of all bookings for the specific course and StatusCode 200 (OK).
+     * - In case the wanted course doesn't exist in the database: errorMessage and StatusCode 302 (NOT_FOUND).
+     */
     @GetMapping("/course/{id}")
-    public ResponseEntity<CourseBookingResponseBody> getBookingsByCourse (
+    public ResponseEntity<CourseBookingResponseBody> getBookingsForCourse (
             @PathVariable
             Long id) {
 

@@ -26,6 +26,7 @@ public class DeleteCourseController {
     /**
      * Rest Path for DELETE-Request: "localhost:8081/api/course/{id}"
      * Method finds the course of a specific id in the database, checks if it exists and if so removes it from the database.
+     * NOTE: If bookings for the wanted course exist, they will also be removed from the bookings-List.
      *
      * @param id - Id (int) of the wanted course
      * @return - ResponseBody incl. confirmation message, StatusCode 200 (OK)

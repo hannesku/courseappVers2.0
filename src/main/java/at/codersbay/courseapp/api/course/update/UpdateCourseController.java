@@ -57,11 +57,15 @@ public class UpdateCourseController {
     ) {
         CourseResponseBody courseResponseBody = new CourseResponseBody();
 
+
+        //CHECK IF REQUESTBODY IS EMPTY:
         if (updateCourseDTO == null) {
             courseResponseBody.addErrorMessage("No Request Body.");
             return new ResponseEntity<>(courseResponseBody, HttpStatus.NO_CONTENT);
         }
 
+
+        // CHECK IF WANTED COURSE EXISTS IN DB:
         Optional<Course> optionalCourse = courseRepository.findById(id);
         if (!optionalCourse.isPresent()) {
             courseResponseBody.addErrorMessage("The course with id " + id + " does not exist");
