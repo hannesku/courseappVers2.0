@@ -171,4 +171,39 @@ public class GetCourseController {
 
     }
 
+
+    /**
+     * Rest Path for GET-Request: "localhost:8081/api/course/allafter"
+     * Method finds all courses that start after a specific date and returns them as a set.
+     *
+     * @param getCourseDTO - The RequestBody is JSON with the searchDate in the form (yyyy-mm-dd) i.e.:
+     *                     {
+     *                     "searchDate" : "2024-10-25"
+     *                     }
+     *
+     * @return - ResponseEntity with StatusCode 200 (OK). Response includes Set<Course>
+     */
+    @GetMapping("/allafter")
+    public ResponseEntity<Set<Course>> getAllCoursesAfterDate (
+            @RequestBody
+            GetCourseDTO getCourseDTO) {
+
+        // CHECK IF INPUT IS RIGHT DATE-FORMAT:
+
+       // if (getCourseDTO.getSearchDate().) {
+
+
+        List<Course> allCourses = courseRepository.findAll();
+        Set<Course> futureCourses = new HashSet<>();
+
+        for (Course course : allCourses) {
+            if (course.getStartDate().isAfter(getCourseDTO.getSearchDate())) {
+                futureCourses.add(course);
+            }
+        }
+
+        return ResponseEntity.ok(futureCourses);
+    }
+
+
 }

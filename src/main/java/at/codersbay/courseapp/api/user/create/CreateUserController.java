@@ -48,8 +48,8 @@ public class CreateUserController {
      *  - Password is missing in RequestBody (PasswordIsEmptyException): errorMessage, StatusCode 400 (BAD_REQUEST)
      *  - Email is missing in RequestBody (UEmailIsEmptyException): errorMessage, StatusCode 400 (BAD_REQUEST)
      *  - Email has no valuable format (EmailIsNoEmailException); errorMessage, StatusCode 400 (BAD_REQUEST)
-     *  - Username already exists in the database (UserAlreadyExistsException); errorMessage, StatusCode 400 (BAD_REQUEST)
-     *  - Email already exists in the database (EmailAlreadyExistsException); errorMessage, StatusCode 400 (BAD_REQUEST)
+     *  - Username already exists in the database (UserAlreadyExistsException); errorMessage, StatusCode 409 (CONFLICT)
+     *  - Email already exists in the database (EmailAlreadyExistsException); errorMessage, StatusCode 409 (CONFLICT)
      *  - Provided Password is considered insecure (PasswordInsecureException); errorMessage, StatusCode 400 (BAD_REQUEST)
      *  - The new user could not be saved to the database: errorMessage, StatusCode 500 (INTERNAL_SERVER_ERROR)
      */
@@ -74,15 +74,16 @@ public class CreateUserController {
                     createUserDTO.getUsername(),
                     createUserDTO.getPassword(),
                     createUserDTO.getEmail());
-        } catch (EmailAlreadyExistsException |
-                 EmailIsEmptyException |
+        } catch (EmailIsEmptyException |
                  EmailIsNoEmailException |
                  PasswordInsecureException |
                  PasswordIsEmptyException |
-                 UserAlreadyExistsException |
                  UsernameIsEmptyException exception) {
             userResponseBody.addErrorMessage(exception.getMessage());
             return new ResponseEntity<>(userResponseBody, HttpStatus.BAD_REQUEST);
+        } catch (UserAlreadyExistsException | EmailAlreadyExistsException alreadyExistsException) {
+            userResponseBody.addErrorMessage(alreadyExistsException.getMessage());
+            return new ResponseEntity<>(userResponseBody, HttpStatus.CONFLICT);
         }
 
         if (!userRepository.findByUsernameIgnoreCase(createUserDTO.getUsername()).isPresent()) {
