@@ -118,6 +118,9 @@ public class GetCourseController {
             @RequestBody
             GetCourseDTO getCourseDTO) {
 
+
+        /*
+        // SLOW + INELEGANT !!
         List<Course> allCourses = courseRepository.findAll();
         Set<Course> ongoingCourses = new HashSet<>();
 
@@ -127,9 +130,11 @@ public class GetCourseController {
                 ongoingCourses.add(course);
             }
         }
+         */
+
+        Set<Course> ongoingCourses = courseRepository.findOngoingCoursesAtDate(getCourseDTO.getSearchDate());
 
         return ResponseEntity.ok(ongoingCourses);
-
     }
 
 
@@ -188,11 +193,8 @@ public class GetCourseController {
             @RequestBody
             GetCourseDTO getCourseDTO) {
 
-        // CHECK IF INPUT IS RIGHT DATE-FORMAT:
-
-       // if (getCourseDTO.getSearchDate().) {
-
-
+/*
+    // SLOW VERSION:
         List<Course> allCourses = courseRepository.findAll();
         Set<Course> futureCourses = new HashSet<>();
 
@@ -201,6 +203,10 @@ public class GetCourseController {
                 futureCourses.add(course);
             }
         }
+
+ */
+
+        Set<Course> futureCourses = courseRepository.findCoursesAfterDate(getCourseDTO.getSearchDate());
 
         return ResponseEntity.ok(futureCourses);
     }
