@@ -118,8 +118,7 @@ public class GetCourseController {
             @RequestBody
             GetCourseDTO getCourseDTO) {
 
-
-        /*
+       /*
         // SLOW + INELEGANT !!
         List<Course> allCourses = courseRepository.findAll();
         Set<Course> ongoingCourses = new HashSet<>();
@@ -137,7 +136,6 @@ public class GetCourseController {
         return ResponseEntity.ok(ongoingCourses);
     }
 
-
     /**
      * Rest Path for GET-Request: "localhost:8081/api/course/available"
      * Method finds all available courses after a specific date and returns them as a set.
@@ -153,9 +151,11 @@ public class GetCourseController {
             @RequestBody
             GetCourseDTO getCourseDTO
     ) {
-
+        /*
+        // SLOW, INELEGANT VERSION:
         List<Course> allCourses = courseRepository.findAll();
         Set<Course> availableCourses = new HashSet<>();
+
 
         int maxParticipants;
         int numberOfBookings;
@@ -172,6 +172,9 @@ public class GetCourseController {
             }
         }
 
+         */
+
+        Set<Course> availableCourses = courseRepository.findAvailableCoursesAfterDate(getCourseDTO.getSearchDate());
         return ResponseEntity.ok(availableCourses);
 
     }
@@ -193,7 +196,9 @@ public class GetCourseController {
             @RequestBody
             GetCourseDTO getCourseDTO) {
 
-/*
+
+
+     /*
     // SLOW VERSION:
         List<Course> allCourses = courseRepository.findAll();
         Set<Course> futureCourses = new HashSet<>();
@@ -210,6 +215,7 @@ public class GetCourseController {
 
         return ResponseEntity.ok(futureCourses);
     }
+
 
 
 }

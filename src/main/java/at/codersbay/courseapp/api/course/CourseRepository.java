@@ -20,4 +20,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("SELECT c FROM Course c " +
             "WHERE :searchDate <= c.startDate")
     Set<Course> findCoursesAfterDate(@Param("searchDate") LocalDate searchDate);
+
+    @Query("SELECT c from Course c where c.startDate > :searchDate and c.bookings.size < c.maxParticipants")
+    Set<Course> findAvailableCoursesAfterDate (@Param("searchDate") LocalDate searchDate);
+
 }
